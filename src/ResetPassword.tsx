@@ -8,21 +8,36 @@ export default function ResetPassword() {
 useEffect(() => {
   const handleSession = async () => {
     try {
+      // 1. Try PKCE flow (new Supabase)
       const { error } = await supabase.auth.exchangeCodeForSession(
         window.location.href
       );
 
-      if (error) {
-        console.error("Auth session error:", error.message);
+      if (!error) return;
+
+      // 2. Fallback: implicit flow (#access_token)
+      const hash = window.location.hash;
+
+      if (hash.includes("access_token")) {
+        const params = new URLSearchParams(hash.replace("#", "?"));
+
+        const access_token = params.get("access_token");
+        const refresh_token = params.get("refresh_token");
+
+        if (access_token && refresh_token) {
+          await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          });
+        }
       }
     } catch (err) {
-      console.error("Unexpected auth error:", err);
+      console.error("Auth handling failed:", err);
     }
   };
 
   handleSession();
 }, []);
-
 const updatePassword = async () => {
   const { data: userData } = await supabase.auth.getUser();
 
