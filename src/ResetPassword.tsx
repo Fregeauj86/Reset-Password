@@ -4,55 +4,62 @@ import { supabase } from "./supabaseClient";
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [done, setDone] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);
 
-useEffect(() => {
-  const handleSession = async () => {
-    try {
-      // 1. Try PKCE flow (new Supabase)
-      const { error } = await supabase.auth.exchangeCodeForSession(
-        window.location.href
-      );
+  useEffect(() => {
+    const handleSession = async () => {
+      try {
+        // 1. Try PKCE flow (new Supabase)
+        const { error } = await supabase.auth.exchangeCodeForSession(
+          window.location.href
+        );
 
-      if (!error) return;
+        if (!error) return;
 
-      // 2. Fallback: implicit flow (#access_token)
-      const hash = window.location.hash;
+        // 2. Fallback: implicit flow (#access_token)
+        const hash = window.location.hash;
 
-      if (hash.includes("access_token")) {
-        const params = new URLSearchParams(hash.replace("#", "?"));
+        if (hash.includes("access_token")) {
+          const params = new URLSearchParams(hash.replace("#", "?"));
 
-        const access_token = params.get("access_token");
-        const refresh_token = params.get("refresh_token");
+          const access_token = params.get("access_token");
+          const refresh_token = params.get("refresh_token");
 
-        if (access_token && refresh_token) {
-          await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
+          if (access_token && refresh_token) {
+            await supabase.auth.setSession({
+              access_token,
+              refresh_token,
+            });
+          }
         }
+
+        // 🆕 SIGNUP DETECTION (ADDED)
+        if (window.location.hash.includes("type=signup")) {
+          setIsSignup(true);
+        }
+      } catch (err) {
+        console.error("Auth handling failed:", err);
       }
-    } catch (err) {
-      console.error("Auth handling failed:", err);
+    };
+
+    handleSession();
+  }, []);
+
+  const updatePassword = async () => {
+    const { data: userData } = await supabase.auth.getUser();
+
+    if (!userData?.user) {
+      alert("Auth session missing! Please reopen the email link.");
+      return;
     }
+
+    const { error } = await supabase.auth.updateUser({
+      password,
+    });
+
+    if (!error) setDone(true);
+    else alert(error.message);
   };
-
-  handleSession();
-}, []);
-const updatePassword = async () => {
-  const { data: userData } = await supabase.auth.getUser();
-
-  if (!userData?.user) {
-    alert("Auth session missing! Please reopen the email link.");
-    return;
-  }
-
-  const { error } = await supabase.auth.updateUser({
-    password,
-  });
-
-  if (!error) setDone(true);
-  else alert(error.message);
-};
 
   return (
     <div style={styles.bg}>
@@ -76,7 +83,14 @@ const updatePassword = async () => {
           The darkness corrupted your password. Restore your power and return to the squad.
         </div>
 
-        {done ? (
+        {/* 🆕 SIGNUP SCREEN (ADDED) */}
+        {isSignup ? (
+          <div style={styles.success}>
+            🎉 EMAIL CONFIRMED 🎉
+            <br />
+            You have joined the ESL Super Squad.
+          </div>
+        ) : done ? (
           <div style={styles.success}>
             🎉 POWER RESTORED 🎉
             <br />
