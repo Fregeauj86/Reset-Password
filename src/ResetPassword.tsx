@@ -24,32 +24,31 @@ export default function ResetPassword() {
 
   return (
     <div style={styles.bg}>
-      {/* DARK OVERLAY */}
       <div style={styles.overlay} />
 
-      {/* FLOATING VILLAINS */}
+      {/* ICONS ONLY - HEROES & VILLAINS */}
       <div style={styles.villains}>
-        👹 Shadow Grammar Beast &nbsp;&nbsp; 🧟 Syntax Zombie &nbsp;&nbsp; 🐉 Error Dragon
+        👹 🧟 🐉 ⚠️ 💀
       </div>
 
-      {/* HEROES */}
       <div style={styles.heroes}>
-        🦸‍♂️ Captain Grammar &nbsp;&nbsp; ⚡ Verb Flash &nbsp;&nbsp; 🦸‍♀️ Queen Vocabulary
+        🦸‍♂️ ⚡ 🦸‍♀️ 📚 ✨
       </div>
 
-      {/* MAIN CARD */}
       <div style={styles.card}>
-        <div style={styles.title}>📖⚡ COMIC BOOK RESET ZONE ⚡📖</div>
+        <div style={styles.title}>
+          ESL Super Squad - Learn English. Save the World.
+        </div>
 
         <div style={styles.subtitle}>
-          The villains corrupted your password — the heroes are restoring your powers!
+          The darkness corrupted your password. Restore your power and return to the squad.
         </div>
 
         {done ? (
           <div style={styles.success}>
-            🎉 HERO RESTORED! 🎉  
+            🎉 POWER RESTORED 🎉
             <br />
-            You have defeated the villains and reclaimed your account.
+            You are back in the ESL Super Squad.
           </div>
         ) : (
           <>
@@ -62,7 +61,7 @@ export default function ResetPassword() {
             />
 
             <button onClick={updatePassword} style={styles.button}>
-              ⚡ DEFEAT THE VILLAINS & RESET
+              ⚡ RESTORE POWER
             </button>
           </>
         )}
@@ -71,7 +70,7 @@ export default function ResetPassword() {
   );
 }
 
-/* 🎨 COMIC STYLES */
+/* 🎨 STYLES */
 const styles: Record<string, React.CSSProperties> = {
   bg: {
     minHeight: "100vh",
@@ -83,7 +82,7 @@ const styles: Record<string, React.CSSProperties> = {
     position: "relative",
     overflow: "hidden",
     background:
-      "radial-gradient(circle at top, #111827, #000000 70%)",
+      "radial-gradient(circle at top, #0b1220, #000000 70%)",
   },
 
   overlay: {
@@ -98,10 +97,8 @@ const styles: Record<string, React.CSSProperties> = {
     position: "absolute",
     top: "15%",
     left: "5%",
-    fontSize: 16,
-    color: "#ef4444",
-    fontWeight: "bold",
-    textShadow: "0 0 10px black",
+    fontSize: 22,
+    textShadow: "0 0 12px black",
     animation: "float 4s ease-in-out infinite",
   },
 
@@ -109,10 +106,8 @@ const styles: Record<string, React.CSSProperties> = {
     position: "absolute",
     bottom: "15%",
     right: "5%",
-    fontSize: 16,
-    color: "#60a5fa",
-    fontWeight: "bold",
-    textShadow: "0 0 10px black",
+    fontSize: 22,
+    textShadow: "0 0 12px black",
     animation: "float 5s ease-in-out infinite",
   },
 
@@ -120,8 +115,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: 420,
     padding: 30,
     borderRadius: 16,
-    background:
-      "rgba(20, 20, 40, 0.75)",
+    background: "rgba(20, 20, 40, 0.75)",
     border: "2px solid rgba(255,255,255,0.15)",
     boxShadow:
       "0 0 40px rgba(239,68,68,0.3), 0 0 40px rgba(96,165,250,0.2)",
