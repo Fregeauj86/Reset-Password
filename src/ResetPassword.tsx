@@ -5,22 +5,39 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    const handleSession = async () => {
-      await supabase.auth.exchangeCodeForSession(window.location.href);
-    };
+useEffect(() => {
+  const handleSession = async () => {
+    try {
+      const { error } = await supabase.auth.exchangeCodeForSession(
+        window.location.href
+      );
 
-    handleSession();
-  }, []);
-
-  const updatePassword = async () => {
-    const { error } = await supabase.auth.updateUser({
-      password,
-    });
-
-    if (!error) setDone(true);
-    else alert(error.message);
+      if (error) {
+        console.error("Auth session error:", error.message);
+      }
+    } catch (err) {
+      console.error("Unexpected auth error:", err);
+    }
   };
+
+  handleSession();
+}, []);
+
+const updatePassword = async () => {
+  const { data: userData } = await supabase.auth.getUser();
+
+  if (!userData?.user) {
+    alert("Auth session missing! Please reopen the email link.");
+    return;
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (!error) setDone(true);
+  else alert(error.message);
+};
 
   return (
     <div style={styles.bg}>
